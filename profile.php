@@ -39,11 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $updateQuery = "UPDATE user SET username='$username', vorname='$firstName', nachname='$lastName', email='$email', password='$password', profile_picture='$profilePicture' WHERE id='$userId'";
     if ($db->query($updateQuery)) {
         $message = "Profile updated successfully.";
-        // Update session variables
         $_SESSION['username'] = $username;
         $_SESSION['firstname'] = $firstName;
         $_SESSION['lastname'] = $lastName;
-        $_SESSION['profile_picture'] = $profilePicture; // Update session profile picture
+        $_SESSION['profile_picture'] = $profilePicture;
     } else {
         $message = "Error updating profile: " . $db->error;
     }

@@ -53,8 +53,73 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 $products = $db->query("SELECT * FROM produkte")->fetch_all(MYSQLI_ASSOC);
-?>
 
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['addUser'])) {
+        $username = $_POST['username'];
+        $firstName = $_POST['vorname'];
+        $lastName = $_POST['nachname'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $profilePicture = 'uploads/default.jpg'; // Default profile picture path
+    
+        // Check if a profile picture is uploaded
+        if (!empty($_FILES['profile_picture']['name'])) {
+            $targetDir = "../uploads/";
+            $targetFile = $targetDir . basename($_FILES["profile_picture"]["name"]);
+            if (move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $targetFile)) {
+                $profilePicture = 'uploads/' . basename($_FILES["profile_picture"]["name"]);
+            } else {
+                echo "Error uploading profile picture.";
+            }
+        }
+    
+        $query = "INSERT INTO user (username, vorname, nachname, email, password, profile_picture) VALUES ('$username', '$firstName', '$lastName', '$email', '$password', '$profilePicture')";
+        $db->query($query);
+    }
+
+    if (isset($_POST['deleteUser'])) {
+        $userId = $_POST['user_id'];
+        $query = "DELETE FROM user WHERE id='$userId'";
+        $db->query($query);
+    }
+
+    if (isset($_POST['updateUser'])) {
+        $userId = $_POST['user_id'];
+        $username = $_POST['username'];
+        $firstName = $_POST['vorname'];
+        $lastName = $_POST['nachname'];
+        $email = $_POST['email'];
+        $profilePicture = $_POST['current_image']; // Use the current image by default
+    
+        // Check if a new profile picture is uploaded
+        if (!empty($_FILES['profile_picture']['name'])) {
+            $targetDir = "../uploads/";
+            $targetFile = $targetDir . basename($_FILES["profile_picture"]["name"]);
+            if (move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $targetFile)) {
+                $profilePicture = 'uploads/' . basename($_FILES["profile_picture"]["name"]);
+            } else {
+                echo "Error uploading profile picture.";
+            }
+        }
+    
+        // Admin password verification
+        $adminPassword = $_POST['admin_password'];
+        $adminQuery = "SELECT password FROM user WHERE username='admin'";
+        $adminResult = $db->query($adminQuery);
+        $adminRow = $adminResult->fetch_assoc();
+    
+        if ($adminRow && $adminRow['password'] === $adminPassword) {
+            $query = "UPDATE user SET username='$username', vorname='$firstName', nachname='$lastName', email='$email', profile_picture='$profilePicture' WHERE id='$userId'";
+            $db->query($query);
+        } else {
+            echo "Invalid admin password!";
+        }
+    }
+}
+$users = $db->query("SELECT * FROM user")->fetch_all(MYSQLI_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,6 +156,7 @@ $products = $db->query("SELECT * FROM produkte")->fetch_all(MYSQLI_ASSOC);
 
     <div class="d-flex">
         <nav id="sidebar" class="bg-dark">
+            <p class="fs-2">Admin Dashboard</p>
             <ul class="list-unstyled">
                 <li><a href="#" id="nav-products" class="nav-link text-white"><i class="fas fa-box"></i> Products</a></li>
                 <li><a href="#" id="nav-users" class="nav-link text-white"><i class="fas fa-users"></i> Users</a></li>
@@ -154,7 +220,7 @@ $products = $db->query("SELECT * FROM produkte")->fetch_all(MYSQLI_ASSOC);
                                     <form method="post" style="display:inline-block;">
                                         <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                                         <input type="hidden" name="current_image" value="<?php echo $product['bild']; ?>">
-                                        <button type="button" class="btn btn-primary" onclick="populateEditForm(<?php echo htmlspecialchars(json_encode($product)); ?>)">Edit</button>
+                                        <button type="button" id="editbtn" class="btn btn-primary" onclick="populateEditForm(<?php echo htmlspecialchars(json_encode($product)); ?>); scrollToEditForm();">Edit</button>
                                         <button type="submit" class="btn btn-danger2" name="delete">Delete</button>
                                     </form>
                                 </td>
@@ -187,60 +253,103 @@ $products = $db->query("SELECT * FROM produkte")->fetch_all(MYSQLI_ASSOC);
                     </form>
                 </section>
 
+
                 <!-- Users Section -->
                 <section id="users-section" style="display: none;">
-                    <h1 class="text-center">Users</h1>
-                    <div class="text-center mb-4">
-                        <a href="../index.php" class="btn btn-danger2">Back to Main</a>
-                    </div>
+                <h1 class="text-center">Users</h1>
                     <form method="post" enctype="multipart/form-data" class="mb-5">
-                        <p class="fs-2 fw-bolder">Add User</p>
+                        <h2>Add User</h2>
                         <div class="mb-3">
-                            <label for="user_name" class="form-label">User Name</label>
-                            <input type="text" class="form-control" id="user_name" name="user_name" required>
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
                         </div>
                         <div class="mb-3">
-                            <label for="user_email" class="form-label">User Email</label>
-                            <input type="email" class="form-control" id="user_email" name="user_email" required>
+                            <label for="vorname" class="form-label">Vorname</label>
+                            <input type="text" class="form-control" id="vorname" name="vorname" required>
                         </div>
                         <div class="mb-3">
-                            <label for="user_password" class="form-label">User Password</label>
-                            <input type="password" class="form-control" id="user_password" name="user_password" required>
+                            <label for="nachname" class="form-label">Nachname</label>
+                            <input type="text" class="form-control" id="nachname" name="nachname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="profile_picture" class="form-label">Profile Picture</label>
+                            <input type="file" class="form-control" id="profile_picture" name="profile_picture">
                         </div>
                         <button type="submit" class="btn btn-primary2" name="addUser">Add User</button>
                     </form>
 
-                    <p class="fs-2 fw-bolder">Manage Users</p>
+                    <h2>Manage Users</h2>
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th>Profile Picture</th>
+                                <th>Username</th>
+                                <th>Vorname</th>
+                                <th>Nachname</th>
                                 <th>Email</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Add PHP code to fetch and display users here -->
+                            <?php foreach ($users as $user): ?>
+                            <tr>
+                                <td><img src="../<?php echo htmlspecialchars($user['profile_picture']); ?>" class="profile-picture" alt="Profile Picture"></td>
+                                <td><?php echo htmlspecialchars($user['username']); ?></td>
+                                <td><?php echo htmlspecialchars($user['vorname']); ?></td>
+                                <td><?php echo htmlspecialchars($user['nachname']); ?></td>
+                                <td><?php echo htmlspecialchars($user['email']); ?></td>
+                                <td>
+                                    <form method="post" style="display:inline-block;">
+                                        <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                                        <input type="hidden" name="current_image" value="<?php echo $user['profile_picture']; ?>">
+                                        <button type="button" class="btn btn-primary" onclick="populateEditUserForm(<?php echo htmlspecialchars(json_encode($user));?>); scrollToUserEditForm();">Edit</button>
+                                        <button type="submit" class="btn btn-danger" name="deleteUser">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
 
-                    <form method="post" enctype="multipart/form-data" id="editUserForm" style="display:none;">
-                        <p class="fs-2 fw-bolder">Edit User</p>
-                        <input type="hidden" id="edit_user_id" name="user_id">
-                        <div class="mb-3">
-                            <label for="edit_user_name" class="form-label">User Name</label>
-                            <input type="text" class="form-control" id="edit_user_name" name="user_name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_user_email" class="form-label">User Email</label>
-                            <input type="email" class="form-control" id="edit_user_email" name="user_email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_user_password" class="form-label">User Password</label>
-                            <input type="password" class="form-control" id="edit_user_password" name="user_password" required>
-                        </div>
-                        <button type="submit" class="btn btn-success" name="updateUser">Update User</button>
-                    </form>
+                    <form method="post" id="editUserForm" enctype="multipart/form-data" style="display:none;">
+    <h2>Edit User</h2>
+    <input type="hidden" id="edit_user_id" name="user_id">
+    <input type="hidden" id="current_image" name="current_image">
+    <div class="mb-3">
+        <label for="edit_username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="edit_username" name="username" required>
+    </div>
+    <div class="mb-3">
+        <label for="edit_vorname" class="form-label">Vorname</label>
+        <input type="text" class="form-control" id="edit_vorname" name="vorname" required>
+    </div>
+    <div class="mb-3">
+        <label for="edit_nachname" class="form-label">Nachname</label>
+        <input type="text" class="form-control" id="edit_nachname" name="nachname" required>
+    </div>
+    <div class="mb-3">
+        <label for="edit_email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="edit_email" name="email" required>
+    </div>
+    <div class="mb-3">
+        <label for="edit_profile_picture" class="form-label">Profile Picture</label>
+        <input type="file" class="form-control" id="edit_profile_picture" name="profile_picture">
+    </div>
+    <div class="mb-3">
+        <label for="admin_password" class="form-label">Admin Password</label>
+        <input type="password" class="form-control" id="admin_password" name="admin_password" required>
+    </div>
+    <button type="submit" class="btn btn-success" name="updateUser">Update User</button>
+</form>
+
                 </section>
             </div>
         </div>
@@ -278,6 +387,25 @@ $products = $db->query("SELECT * FROM produkte")->fetch_all(MYSQLI_ASSOC);
             document.getElementById('current_image').value = product.bild;
         }
 
+        function populateEditUserForm(user) {
+    document.getElementById('editUserForm').style.display = 'block';
+    document.getElementById('edit_user_id').value = user.id;
+    document.getElementById('edit_username').value = user.username;
+    document.getElementById('edit_vorname').value = user.vorname;
+    document.getElementById('edit_nachname').value = user.nachname;
+    document.getElementById('edit_email').value = user.email;
+    document.getElementById('current_image').value = user.profile_picture;
+    document.getElementById('edit_profile_picture').value = ''; // Clear the file input
+}
+
+        function scrollToEditForm() {
+            document.getElementById('editForm').scrollIntoView({behavior: "smooth"});
+        }
+
+        function scrollToUserEditForm() {
+            document.getElementById('editUserForm').scrollIntoView({behavior: "smooth"});
+        }
+
         function toggleDropdown() {
             var dropdown = document.getElementById("profileDropdown");
             if (dropdown.style.display === "block") {
@@ -296,6 +424,7 @@ $products = $db->query("SELECT * FROM produkte")->fetch_all(MYSQLI_ASSOC);
             document.getElementById('products-section').style.display = 'none';
             document.getElementById('users-section').style.display = 'block';
         });
+
     </script>
 </body>
 </html>
