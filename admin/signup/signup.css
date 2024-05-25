@@ -1,0 +1,89 @@
+body {
+    background-color: #f9f9fb;
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.card {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* Enhanced shadow for depth */
+    background-color: #ffffff;
+    border-radius: 10px; /* Rounded corners for the card */
+    width: 340px; /* Fixed width */
+    overflow: hidden; /* Ensures nothing leaks outside the border */
+    transition: transform 0.3s ease; /* Smooth transformation on hover */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Slight lift effect */
+    box-shadow: 0 12px 24px rgba(0,0,0,0.2); /* Deeper shadow on hover */
+}
+
+.card-body {
+    padding: 24px;
+}
+
+.form-group label {
+    color: #666;
+}
+
+.form-control {
+    background-color: #fff;
+    border-radius: 8px;
+    border: 2px solid #e2e2e2;
+    transition: border 0.2s ease-in-out; /* Smooth transition for the border */
+}
+
+.form-control:focus {
+    border-color: #0066cc;
+    box-shadow: 0 0 8px rgba(0, 102, 204, 0.5); /* Glowing effect for focus */
+    outline: none; /* Removes default focus outline */
+}
+
+.btn-block {
+    background-color: #0066cc;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.3s ease-in-out;
+    border: none; /* Removes border */
+}
+
+.btn-block:hover, .btn-block:focus {
+    background-color: #0052a3;
+    outline: none; /* Removes focus outline */
+    box-shadow: 0 0 8px rgba(0, 82, 163, 0.6); /* Glowing effect on hover/focus */
+}
+
+.form-check-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.form-check-input {
+    accent-color: #0066cc;
+}
+
+a {
+    color: #0066cc;
+}
+
+a:hover {
+    color: #0052a3;
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 16px;
+    }
+
+    .card {
+        width: auto; /* Full width on smaller screens */
+        margin: 10px; /* Adds margin around the card */
+    }
+}

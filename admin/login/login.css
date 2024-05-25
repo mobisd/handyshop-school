@@ -1,0 +1,100 @@
+/* General body styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background: white;
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+/* Container for the login form */
+.login-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.5); /* Enhanced deeper shadow for more depth */
+    width: 300px;
+    opacity: 0.95; /* Slightly transparent to show the background */
+}
+
+/* Styling for the form elements */
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form h2 {
+    color: #333333;
+    margin-bottom: 10px;
+}
+
+.login-form p {
+    color: #666666;
+    font-size: 14px;
+}
+
+input[type="email"], input[type="password"] {
+    padding: 10px;
+    margin-top: 10px;
+    border: 2px solid #dddddd;
+    border-radius: 5px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.8); /* Slightly see-through */
+}
+
+input[type="email"]:focus, input[type="password"]:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 86, 179, 1); /* Glowing effect when focused */
+}
+
+button {
+    background-color: #0056b3;
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Subtle shadow for button */
+}
+
+button:hover {
+    background-color: #003d82;
+    box-shadow: 0 0 12px rgba(0, 56, 179, 0.8); /* Glowing effect on hover */
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.signup-link a {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+.password-toggle-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 72%;
+    transform: translate(0, -50%);
+    z-index: 10;
+}
+
+.error {
+    color: red;
+    text-align: center;
+    text-shadow: 1px 2px 3px black;
+}
