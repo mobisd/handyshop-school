@@ -320,7 +320,6 @@ form .btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* margin-top: 400px; */
 }
 
 #sidebar ul li {

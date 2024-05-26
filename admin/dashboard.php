@@ -62,19 +62,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $lastName = $_POST['nachname'];
         $email = $_POST['email'];
         $password = $_POST['password'];
-        $profilePicture = 'uploads/default.jpg'; // Default profile picture path
-    
-        // Check if a profile picture is uploaded
+        $profilePicture = 'default.jpg';
+
         if (!empty($_FILES['profile_picture']['name'])) {
             $targetDir = "../uploads/";
             $targetFile = $targetDir . basename($_FILES["profile_picture"]["name"]);
             if (move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $targetFile)) {
-                $profilePicture = 'uploads/' . basename($_FILES["profile_picture"]["name"]);
-            } else {
-                echo "Error uploading profile picture.";
+                $profilePicture = "uploads/" . basename($_FILES["profile_picture"]["name"]);
             }
         }
-    
+
         $query = "INSERT INTO user (username, vorname, nachname, email, password, profile_picture) VALUES ('$username', '$firstName', '$lastName', '$email', '$password', '$profilePicture')";
         $db->query($query);
     }
@@ -91,26 +88,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $firstName = $_POST['vorname'];
         $lastName = $_POST['nachname'];
         $email = $_POST['email'];
-        $profilePicture = $_POST['current_image']; // Use the current image by default
-    
-        // Check if a new profile picture is uploaded
+        $currentImage = $_POST['current_image'];
+        
+        $profilePicture = $currentImage;
+
         if (!empty($_FILES['profile_picture']['name'])) {
             $targetDir = "../uploads/";
             $targetFile = $targetDir . basename($_FILES["profile_picture"]["name"]);
             if (move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $targetFile)) {
-                $profilePicture = 'uploads/' . basename($_FILES["profile_picture"]["name"]);
-            } else {
-                echo "Error uploading profile picture.";
+                $profilePicture = "uploads/" . basename($_FILES["profile_picture"]["name"]);
             }
         }
-    
-        // Admin password verification
+
         $adminPassword = $_POST['admin_password'];
-        $adminQuery = "SELECT password FROM user WHERE username='admin'";
-        $adminResult = $db->query($adminQuery);
-        $adminRow = $adminResult->fetch_assoc();
-    
-        if ($adminRow && $adminRow['password'] === $adminPassword) {
+        $adminQuery = $db->query("SELECT password FROM user WHERE username = 'admin'");
+        $admin = $adminQuery->fetch_assoc();
+
+        if ($adminPassword === $admin['password']) {
             $query = "UPDATE user SET username='$username', vorname='$firstName', nachname='$lastName', email='$email', profile_picture='$profilePicture' WHERE id='$userId'";
             $db->query($query);
         } else {
@@ -118,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
+
 $users = $db->query("SELECT * FROM user")->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -318,37 +313,36 @@ $users = $db->query("SELECT * FROM user")->fetch_all(MYSQLI_ASSOC);
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-
                     <form method="post" id="editUserForm" enctype="multipart/form-data" style="display:none;">
-    <h2>Edit User</h2>
-    <input type="hidden" id="edit_user_id" name="user_id">
-    <input type="hidden" id="current_image" name="current_image">
-    <div class="mb-3">
-        <label for="edit_username" class="form-label">Username</label>
-        <input type="text" class="form-control" id="edit_username" name="username" required>
-    </div>
-    <div class="mb-3">
-        <label for="edit_vorname" class="form-label">Vorname</label>
-        <input type="text" class="form-control" id="edit_vorname" name="vorname" required>
-    </div>
-    <div class="mb-3">
-        <label for="edit_nachname" class="form-label">Nachname</label>
-        <input type="text" class="form-control" id="edit_nachname" name="nachname" required>
-    </div>
-    <div class="mb-3">
-        <label for="edit_email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="edit_email" name="email" required>
-    </div>
-    <div class="mb-3">
-        <label for="edit_profile_picture" class="form-label">Profile Picture</label>
-        <input type="file" class="form-control" id="edit_profile_picture" name="profile_picture">
-    </div>
-    <div class="mb-3">
-        <label for="admin_password" class="form-label">Admin Password</label>
-        <input type="password" class="form-control" id="admin_password" name="admin_password" required>
-    </div>
-    <button type="submit" class="btn btn-success" name="updateUser">Update User</button>
-</form>
+                        <h2>Edit User</h2>
+                        <input type="hidden" id="edit_user_id" name="user_id">
+                        <input type="hidden" id="current_image" name="current_image">
+                        <div class="mb-3">
+                            <label for="edit_username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="edit_username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_vorname" class="form-label">Vorname</label>
+                            <input type="text" class="form-control" id="edit_vorname" name="vorname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_nachname" class="form-label">Nachname</label>
+                            <input type="text" class="form-control" id="edit_nachname" name="nachname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="edit_email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_profile_picture" class="form-label">Profile Picture</label>
+                            <input type="file" class="form-control" id="edit_profile_picture" name="profile_picture">
+                        </div>
+                        <div class="mb-3">
+                            <label for="admin_password" class="form-label">Admin Password</label>
+                            <input type="password" class="form-control" id="admin_password" name="admin_password" required>
+                        </div>
+                        <button type="submit" class="btn btn-success" name="updateUser">Update User</button>
+                    </form>
 
                 </section>
             </div>
