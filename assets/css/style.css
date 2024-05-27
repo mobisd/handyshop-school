@@ -658,21 +658,6 @@ body {
   margin: 0;
 }
 
-/* .btn-login, .btn-register {
-    background: linear-gradient(90deg, rgb(47, 48, 49) 0%, rgb(0, 0, 0) 100%);
-    border: none;
-    border-radius: 20px;
-    padding: 10px 20px;
-    color: white;
-    font-size: 1rem;
-    transition: background 0.3s, transform 0.3s;
-}
-
-.btn-login:hover, .btn-register:hover {
-    background: linear-gradient(90deg, rgba(0,123,255,0.8) 0%, rgba(40,167,69,0.8) 100%);
-    transform: scale(1.05);
-} */
-
 .add-to-cart {
   background-color: #007bff;
   color: white;
