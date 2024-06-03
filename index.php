@@ -365,7 +365,7 @@ $cartCount = isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : 0;
                     <a href="#"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
-            <p class="text-center text-body-primary">© 2024 Company, SCHMID MORITZ WÆH</p>
+            <p class="text-center text-body-primary">© 2024 Company, SCHMID MORITZ FWÆH</p>
         </div>
     </footer>
 
