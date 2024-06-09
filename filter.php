@@ -12,15 +12,18 @@ $result = mysqli_query($db, $query);
 echo '<div class="card-container2">';
 while ($row = mysqli_fetch_assoc($result)) {
     echo <<<CARD
-        <div class="card2 shadow-sm">
-            <img class="card-img-top2" src="assets/produkte/{$row['bild']}" alt="Product Image">
-            <div class="card-body2">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#details{$row['id']}">
-                    Details
-                </button>
-                <button type="button" class="btn btn-primary add-to-cart" data-product-id="{$row['id']}">
-                    In den Warenkorb
-                </button>
+        <div class="card shadow-sm">
+            <img class="card-img-top" src="assets/produkte/{$row['bild']}" alt="Product Image">
+            <div class="card-body">
+                <h5 class="card-title">{$row['name']}</h5>
+                <p class="card-text">{$row['beschreibung']}</p>
+                <p class="card-text"><strong>Category:</strong> {$row['kategorie']}</p>
+                <p class="card-text"><strong>Price:</strong> {$row['preis']}</p>
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-success add-to-cart" data-product-id="{$row['id']}">
+                        Add to Cart
+                    </button>
+                </div>
             </div>
         </div>
     CARD;

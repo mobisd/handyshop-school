@@ -82,10 +82,12 @@ body {
 }
 
 .card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
 }
 
 .card-body,
@@ -102,6 +104,18 @@ body {
   height: auto;
   object-position: top;
   border: none; /* Remove any default borders */
+}
+
+.card-title {
+  font-size: 1.2rem;
+  color: rgb(0, 0, 0);
+  margin-bottom: 10px;
+}
+
+.card-text {
+  font-size: 0.9rem;
+  color: #000000;
+  margin-bottom: 15px;
 }
 
 .card.sale-highlight-card {
