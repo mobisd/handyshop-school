@@ -344,6 +344,7 @@ body {
   font-size: 24px;
   text-decoration: none;
   position: relative;
+  margin-left: 10px;
 }
 
 .cart-icon i {
